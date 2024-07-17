@@ -50,7 +50,7 @@ public class AdminController {
     }
 
     @GetMapping("/getallmembers")
-    public ResponseEntity<List<User>> getallMembers(){
+    public ResponseEntity<List<User>> getAllMembers(){
         List<User> members = adminService.getAllMembers();
         return ResponseEntity.ok(members);
     }
