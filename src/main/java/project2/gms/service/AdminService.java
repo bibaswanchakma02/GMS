@@ -4,12 +4,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import project2.gms.dto.AddMembership;
 import project2.gms.dto.AddRequest;
 import project2.gms.dto.AuthResponse;
+import project2.gms.model.Membership;
 import project2.gms.model.User;
 import project2.gms.model.Role;
+import project2.gms.repository.MembershipRepository;
 import project2.gms.repository.UserRepository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,6 +26,8 @@ public class AdminService {
 
     @Autowired
     private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private MembershipRepository membershipRepository;
 
 
     public Optional<User> getAdminProfile(String username){
@@ -73,6 +79,40 @@ public class AdminService {
         }else{
             return false;
         }
+    }
+
+    public String addMembership(AddMembership addMembership){
+        Optional<Membership> membership = membershipRepository.findByPackageName(addMembership.getPackageName());
+        if(membership.isPresent()){
+            return "Membership package already exists!";
+        }
+
+        Date date = new Date();
+
+        Membership.Benefits benefits = Membership.Benefits.builder()
+                .accessToAllFacilities(addMembership.getBenefits().isAccessToAllFacilities())
+                .freePersonalTrainerSessions(addMembership.getBenefits().getFreePersonalTrainerSessions())
+                .freeGroupClasses(addMembership.getBenefits().isFreeGroupClasses())
+                .nutritionPlan(addMembership.getBenefits().isNutritionPlan())
+                .guestPasses(addMembership.getBenefits().getGuestPasses())
+                .merchandiseDiscount(addMembership.getBenefits().getMerchandiseDiscount())
+                .lockerServices(addMembership.getBenefits().isLockerServices())
+                .parking(addMembership.getBenefits().isParking())
+                .other(addMembership.getBenefits().getOther())
+                .build();
+
+
+        Membership newMembership = Membership.builder()
+                .packageId(UUID.randomUUID())
+                .packageName(addMembership.getPackageName())
+                .price(addMembership.getPrice())
+                .benefits(benefits)
+                .duration(addMembership.getDuration())
+                .createdDate(date)
+                .build();
+
+        membershipRepository.save(newMembership);
+        return "New membership added";
     }
 
 }

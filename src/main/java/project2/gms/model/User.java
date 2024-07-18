@@ -29,6 +29,9 @@ public class User implements UserDetails {
     private String email;
     private String image;
     private Role role;
+    private String assignedTrainer;
+    private Membership membership;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import project2.gms.dto.AddMembership;
 import project2.gms.dto.AddRequest;
 import project2.gms.dto.AuthResponse;
 import project2.gms.model.User;
+import project2.gms.repository.MembershipRepository;
 import project2.gms.service.AdminService;
 
 import java.util.List;
@@ -83,5 +85,16 @@ public class AdminController {
         }else{
             return ResponseEntity.status(404).body("User not found");
         }
-     }
+    }
+
+    @PostMapping("/addMembership")
+    public ResponseEntity<String> addPackage(@RequestBody AddMembership addMembership){
+       try {
+           String newMembership = adminService.addMembership(addMembership);
+           return new ResponseEntity<>(newMembership, HttpStatus.OK);
+       }catch (Exception e){
+           return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+       }
+    }
+
 }
