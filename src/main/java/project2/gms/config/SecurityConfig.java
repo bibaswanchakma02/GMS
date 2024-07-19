@@ -31,7 +31,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasAnyAuthority("ADMIN")
                         .requestMatchers("/api/v1/trainer/**").hasAnyAuthority("TRAINER")
-                        .requestMatchers("/api/v1/users/**").hasAnyAuthority("USER")
                         .anyRequest().authenticated())
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)

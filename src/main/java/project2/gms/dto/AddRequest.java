@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import project2.gms.model.Membership;
 import project2.gms.model.Role;
 
 
@@ -20,4 +21,6 @@ public class AddRequest {
     private String email;
     private String image;
     private Role role;
+    private String assignedTrainer;
+    private String packageName;
 }
