@@ -75,8 +75,6 @@ public class AdminService {
 
         }
 
-
-
         var user = User.builder()
                 .id(UUID.randomUUID())
                 .username(request.getUsername())

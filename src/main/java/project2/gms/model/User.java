@@ -24,6 +24,7 @@ public class User implements UserDetails {
     @Id
     private UUID id;
     private String username;
+    private String fullName;
     private String password;
     private long mobileNo;
     private String email;

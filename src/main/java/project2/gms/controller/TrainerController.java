@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import project2.gms.jwt.JwtService;
+import project2.gms.model.TrainerRequest;
 import project2.gms.model.User;
 import project2.gms.service.TrainerService;
 
@@ -16,6 +18,8 @@ public class TrainerController {
 
     @Autowired
     private TrainerService trainerService;
+    @Autowired
+    private JwtService jwtService;
 
     @GetMapping("/profile/{username}")
     public ResponseEntity<Optional<User>> getProfile(@PathVariable String username){
@@ -37,6 +41,27 @@ public class TrainerController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping("/getRequests")
+    public ResponseEntity<List<TrainerRequest>> getPendingRequests(@RequestHeader("Authorization") String token){
+
+        String jwtToken = token.substring(7);
+        String trainerName = jwtService.extractUsername(jwtToken);
+
+        if(trainerName == null){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        List<TrainerRequest> requests = trainerService.getRequests(trainerName);
+
+        if(requests.isEmpty()){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(requests, HttpStatus.OK);
+
+    }
+
 
 
 
