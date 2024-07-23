@@ -1,6 +1,7 @@
 package project2.gms.auth.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -13,9 +14,12 @@ import project2.gms.repository.UserRepository;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final UserRepository userRepository;
-    private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
+    @Autowired
+    private  UserRepository userRepository;
+    @Autowired
+    private JwtService jwtService;
+    @Autowired
+    private  AuthenticationManager authenticationManager;
 
 
     public AuthResponse login(LoginRequest request){
