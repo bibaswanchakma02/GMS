@@ -6,6 +6,30 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
+#name: CI/CD GMS
+#
+#on:
+#  push:
+#    branches: [ "main" ]
+#  pull_request:
+#    branches: [ "main" ]
+#
+#jobs:
+#  build:
+#
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#    - uses: actions/checkout@v4
+#    - name: Set up JDK 17
+#      uses: actions/setup-java@v3
+#      with:
+#        java-version: '17'
+#        distribution: 'temurin'
+#        cache: maven
+#    - name: Build with Maven
+#      run: mvn clean install
+
 name: CI/CD GMS
 
 on:
@@ -16,18 +40,45 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: maven
-    - name: Build with Maven
-      run: mvn clean install
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build with Maven
+        run: mvn clean install
+
+      - name: Build Docker image
+        run: |
+          docker build -t bibaswanchakma/gmsapi:latest .
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+
+      - name: Push Docker image to Docker Hub
+        run: |
+          docker push bibaswanchakma/gmsapi:latest
+
+#  deploy:
+#    needs: build
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Deploy to Render
+#        env:
+#          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+#        run: |
+#          curl -X POST \
+#            -H "Authorization: Bearer $RENDER_API_KEY" \
+#            -H "Accept: application/json" \
+#            -H "Content-Type: application/json" \
+#            -d '{"serviceId": "your-render-service-id", "branch": "main"}' \
+#            https://api.render.com/v1/services/your-render-service-id/deploys
 
     
