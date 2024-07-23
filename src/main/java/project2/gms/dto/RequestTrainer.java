@@ -1,0 +1,18 @@
+package project2.gms.dto;
+
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class RequestTrainer {
+
+    private String trainerName;
+    private String memberName;
+
+}
