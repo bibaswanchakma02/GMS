@@ -21,8 +21,14 @@ public class TrainerController {
     @Autowired
     private JwtService jwtService;
 
-    @GetMapping("/profile/{username}")
-    public ResponseEntity<Optional<User>> getProfile(@PathVariable String username){
+    @GetMapping("/profile")
+    public ResponseEntity<Optional<User>> getProfile(@RequestHeader("Authorization") String token){
+        String jwtToken = token.substring(7);
+        String username = jwtService.extractUsername(jwtToken);
+
+        if(username == null){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
         Optional<User> profile = trainerService.getProfile(username);
         if(profile.isPresent()){
             return new ResponseEntity<>(profile, HttpStatus.OK);
