@@ -15,6 +15,7 @@ import project2.gms.service.AdminService;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1/admin")
 public class AdminController {
@@ -25,22 +26,7 @@ public class AdminController {
     @Autowired
     private JwtService jwtService;
 
-    @GetMapping("/profile")
-    public ResponseEntity<Optional<User>> getAdminProfile(@RequestHeader("Authorization") String token){
-        String jwtToken = token.substring(7);
-        String username = jwtService.extractUsername(jwtToken);
 
-        if(username == null){
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
-
-        Optional<User> user = adminService.getAdminProfile(username);
-        if(user.isPresent()){
-            return new ResponseEntity<>(user,HttpStatus.OK);
-        }else{
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-    }
 
     @PostMapping("/addmember")
     public ResponseEntity<AuthResponse> registerUser(@RequestBody AddRequest request){

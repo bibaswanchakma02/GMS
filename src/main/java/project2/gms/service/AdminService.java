@@ -27,9 +27,7 @@ public class AdminService {
     private MembershipRepository membershipRepository;
 
 
-    public Optional<User> getAdminProfile(String username){
-        return userRepository.findByUsername(username);
-    }
+
 
 
     public AuthResponse addUser(AddRequest request) {

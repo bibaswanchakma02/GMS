@@ -12,6 +12,7 @@ import project2.gms.service.TrainerService;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1/trainer")
 public class TrainerController {
@@ -21,22 +22,7 @@ public class TrainerController {
     @Autowired
     private JwtService jwtService;
 
-    @GetMapping("/profile")
-    public ResponseEntity<Optional<User>> getProfile(@RequestHeader("Authorization") String token){
-        String jwtToken = token.substring(7);
-        String username = jwtService.extractUsername(jwtToken);
 
-        if(username == null){
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
-        Optional<User> profile = trainerService.getProfile(username);
-        if(profile.isPresent()){
-            return new ResponseEntity<>(profile, HttpStatus.OK);
-        }else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-
-    }
 
     @GetMapping("/getmembers")
     public ResponseEntity<Optional<List<User>>> getMembers(@RequestParam String assignedTrainer){
