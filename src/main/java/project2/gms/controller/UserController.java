@@ -14,6 +14,7 @@ import project2.gms.service.UserService;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1/user")
 public class UserController {
@@ -23,22 +24,7 @@ public class UserController {
     @Autowired
     private JwtService jwtService;
 
-    @GetMapping("/profile")
-    public ResponseEntity<Optional<User>> getProfile(@RequestHeader("Authorization") String token){
-        String jwtToken = token.substring(7);
-        String username = jwtService.extractUsername(jwtToken);
 
-        if(username == null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        Optional<User> profile = userService.getProfile(username);
-        if(profile.isPresent()){
-            return new ResponseEntity<>(profile, HttpStatus.OK);
-        }else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-
-    }
 
     @GetMapping("/getallTrainers")
     public ResponseEntity<List<User>> getAllTrainers(){

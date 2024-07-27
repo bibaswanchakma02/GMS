@@ -13,6 +13,7 @@ import project2.gms.service.PaymentService;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1/membership")
 public class MembershipController {

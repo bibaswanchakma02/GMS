@@ -15,6 +15,7 @@ import project2.gms.model.Role;
 public class AddRequest {
 
     private String username;
+    private String fullName;
     private String password;
     private long mobileNo;
     private String email;
