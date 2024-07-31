@@ -28,16 +28,18 @@ public class JwtService {
         return extractClaim(token, Claims::getSubject);
     }
 
+
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails, boolean passwordResetRequired) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("roles", userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList()));
+        claims.put("passwordResetRequired", passwordResetRequired);
 
         return generateToken(claims,userDetails);
     }

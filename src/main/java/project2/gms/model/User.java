@@ -32,6 +32,13 @@ public class User implements UserDetails {
     private Role role;
     private String assignedTrainer;
     private Membership membership;
+    private boolean passwordResetRequired;
+
+    public void updateMembershipStatus(){
+        if(membership != null){
+            membership.updateStatus();
+        }
+    }
 
 
     @Override

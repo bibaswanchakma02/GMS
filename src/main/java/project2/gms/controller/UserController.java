@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project2.gms.dto.RequestTrainer;
+import project2.gms.dto.ResetPassword;
 import project2.gms.dto.UserProfileEditRequest;
 import project2.gms.jwt.JwtService;
 import project2.gms.model.Membership;
@@ -81,5 +82,7 @@ public class UserController {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
+
+
 
 }
