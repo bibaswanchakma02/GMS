@@ -76,6 +76,7 @@ public class AdminService {
         var user = User.builder()
                 .id(UUID.randomUUID())
                 .username(request.getUsername())
+                .fullName(request.getFullName())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .mobileNo(request.getMobileNo())
                 .email(request.getEmail())
@@ -83,6 +84,7 @@ public class AdminService {
                 .role(role)
                 .assignedTrainer(request.getAssignedTrainer())
                 .membership(userMembership)
+                .passwordResetRequired(true)
                 .build();
 
         userRepository.save(user);
@@ -94,9 +96,7 @@ public class AdminService {
         return userRepository.findAll();
     }
 
-    public List<User> getAllTrainers() {
-        return userRepository.findByRole(Role.TRAINER);
-    }
+
 
     public Optional<User> getMember(String username){
         return userRepository.findByUsername(username);

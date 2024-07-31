@@ -53,5 +53,15 @@ public class Membership {
         private String other;
     }
 
+    public void updateStatus(){
+        Date currentDate = new Date();
+
+        if(membershipExpiryDate.before(currentDate)){
+            status = "expired";
+        }else{
+            status = "active";
+        }
+    }
+
 
 }

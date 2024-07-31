@@ -45,16 +45,6 @@ public class AdminController {
         return ResponseEntity.ok(members);
     }
 
-    @GetMapping("/getalltrainers")
-    public ResponseEntity<List<User>> getAllTrainers(){
-        List<User> trainers = adminService.getAllTrainers();
-        if(trainers.isEmpty()){
-            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
-        }else {
-            return new ResponseEntity<>(trainers,HttpStatus.OK);
-        }
-    }
-
     @GetMapping("/getmember/{username}")
     public ResponseEntity<Optional<User>> getMember(@PathVariable("username") String username){
         Optional<User> user = adminService.getMember(username);

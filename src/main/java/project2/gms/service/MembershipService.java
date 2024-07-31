@@ -29,15 +29,22 @@ public class MembershipService {
         Optional<User> userOptional = userRepository.findByUsername(username);
         if(userOptional.isPresent()){
             User user = userOptional.get();
-            Membership membership = membershipRepository.findByPackageName(packageName).orElseThrow(()->new RuntimeException("Membership not found"));
+//            Membership membership = membershipRepository.findByPackageName(packageName).orElseThrow(()->new RuntimeException("Membership not found"));
+            Membership membership = user.getMembership();
+            Date currentDate =  new Date();
+            Date startDate;
 
-            Date date =  new Date();
+            if(membership.getMembershipExpiryDate().before(currentDate)){
+                startDate = currentDate;
+            }else{
+                startDate = membership.getMembershipExpiryDate();
+            }
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
+            calendar.setTime(startDate);
             calendar.add(Calendar.DATE, membership.getDuration());
             Date expiryDate = calendar.getTime();
 
-            membership.setMembershipStartDate(date);
+            membership.setMembershipStartDate(startDate);
             membership.setMembershipExpiryDate(expiryDate);
             membership.setPaymentStatus(true);
             membership.setRenewalStatus(true);

@@ -28,7 +28,7 @@ public class AuthService {
         );
 
         var user = userRepository.findByUsername(request.getUsername()).orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
+        var jwtToken = jwtService.generateToken(user, user.isPasswordResetRequired());
 
         return AuthResponse.builder().responseString(jwtToken).build();
     }

@@ -4,8 +4,10 @@ package project2.gms.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import project2.gms.dto.RequestTrainer;
+import project2.gms.dto.ResetPassword;
 import project2.gms.dto.UserProfileEditRequest;
 import project2.gms.model.Membership;
 import project2.gms.model.Role;
@@ -27,11 +29,9 @@ public class UserService {
     UserRepository userRepository;
     @Autowired
     private RequestRepository requestRepository;
+    @Autowired
+    private final PasswordEncoder passwordEncoder;
 
-
-    public Optional<User> getProfile(String username){
-        return userRepository.findByUsername(username);
-    }
 
     public List<User> getTrainers(){
         return userRepository.findByRole(Role.TRAINER);
@@ -85,5 +85,6 @@ public class UserService {
 
         }
     }
+
 
 }
