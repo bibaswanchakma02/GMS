@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project is a Gym Management System that allows users to register, login, view and edit their profiles, renew memberships, request trainers, and manage membership details. It includes backend functionality with Spring Boot and MongoDB, frontend integration with React.js, and payment handling through Razorpay.
+This project is a Gym Management System that allows users to register, login, view and edit their profiles, renew memberships, request trainers, and manage membership details. It includes backend functionality with Spring Boot and MongoDB, frontend integration with React.js, and payment handling through Razorpay. The front end using Reactjs is in a seperate repository.
 
 ## Features
 
