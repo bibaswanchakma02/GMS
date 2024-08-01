@@ -38,5 +38,11 @@ This project is a Gym Management System that allows users to register, login, vi
 1. **Clone the Repository**
 
    ```sh
-   git clone https://github.com/your-repo/gym-management-system.git
-   cd gym-management-system
+   git clone https://github.com/bibaswanchakma02/GMS.git
+   cd GMS
+2. **Set up environment variables**
+   Set up your own environment variables to use in the application.properties file. If you are using IntelliJ follow these steps -
+   - Go to "Run" tab.
+   - Go to Edit Conigurations
+   - You will find option to add environment variables.
+   
