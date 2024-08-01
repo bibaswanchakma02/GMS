@@ -1,5 +1,6 @@
 package project2.gms.service;
 
+import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,10 @@ import project2.gms.repository.MembershipRepository;
 import project2.gms.repository.UserRepository;
 
 import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +21,7 @@ public class MembershipService {
 
     private final MembershipRepository membershipRepository;
     private final UserRepository userRepository;
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     public List<Membership> membershipOptions(){
         return membershipRepository.findAll();
@@ -27,36 +33,63 @@ public class MembershipService {
 
     public String updateMembership (String username, String packageName){
         Optional<User> userOptional = userRepository.findByUsername(username);
-        if(userOptional.isPresent()){
-            User user = userOptional.get();
-//            Membership membership = membershipRepository.findByPackageName(packageName).orElseThrow(()->new RuntimeException("Membership not found"));
-            Membership membership = user.getMembership();
-            Date currentDate =  new Date();
-            Date startDate;
+        Optional<Membership> newMembershipOptional = membershipRepository.findByPackageName(packageName);
 
-            if(membership.getMembershipExpiryDate().before(currentDate)){
-                startDate = currentDate;
-            }else{
-                startDate = membership.getMembershipExpiryDate();
-            }
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(startDate);
-            calendar.add(Calendar.DATE, membership.getDuration());
-            Date expiryDate = calendar.getTime();
+        if (!userOptional.isPresent()) {
+            throw new UsernameNotFoundException("Username not found");
+        }
 
-            membership.setMembershipStartDate(startDate);
-            membership.setMembershipExpiryDate(expiryDate);
-            membership.setPaymentStatus(true);
-            membership.setRenewalStatus(true);
-            membership.setStatus("active");
+        User user = userOptional.get();
+        Membership oldMembership = user.getMembership();
+        Membership newMembership = newMembershipOptional.get();
+        Date currentDate =  new Date();
 
-            user.setMembership(membership);
+        if(oldMembership.getMembershipExpiryDate().before(currentDate)){
 
-            userRepository.save(user);
-
+            updateUserMembership(user, newMembership);
+            return "membership renewed successfully";
+        }else{
+            long delay = oldMembership.getMembershipExpiryDate().getTime() - currentDate.getTime();
+            scheduler.schedule(()->updateUserMembership(user, newMembership), delay, TimeUnit.MILLISECONDS);
             return "Membership renewed";
-        }else {
-            throw new UsernameNotFoundException("username not found");
         }
     }
+
+    private void updateUserMembership(User user, Membership newMembership){
+        Date currentDate = new Date();
+        Date startDate = currentDate.after(user.getMembership().getMembershipExpiryDate()) ?
+                currentDate : user.getMembership().getMembershipExpiryDate();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(startDate);
+        calendar.add(Calendar.DATE, newMembership.getDuration());
+        Date expiryDate = calendar.getTime();
+
+        newMembership.setMembershipStartDate(startDate);
+        newMembership.setMembershipExpiryDate(expiryDate);
+        newMembership.setPaymentStatus(true);
+        newMembership.setRenewalStatus(true);
+        newMembership.setStatus("active");
+
+        user.setMembership(newMembership);
+
+        userRepository.save(user);
+
+        System.out.println("Membership renewed for user: " + user.getUsername());
+
+    }
+
+    @PreDestroy
+    public void shutdownScheduler() {
+        scheduler.shutdown();
+        try {
+            if (!scheduler.awaitTermination(1, TimeUnit.MINUTES)) {
+                scheduler.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            scheduler.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
+    }
+
 }
