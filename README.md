@@ -26,7 +26,6 @@ This project is a Gym Management System that allows users to register, login, vi
 ## Prerequisites
 
 - Java 11 or higher
-- Node.js and npm
 - MongoDB
 - Maven
 - Razorpay account for payment integration
